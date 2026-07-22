@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Which Freeze Type Are You? — Free Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF8F3;
+    --paper-alt:#F0E9DF;
+    --slate:#1F3A4D;
+    --ember:#C9763D;
+    --ember-dark:#B5652F;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--slate);
+    font-family:'Poppins', sans-serif;
+    line-height:1.6;
+    min-height:100vh;
+  }
+  .wrap{max-width:640px; margin:0 auto; padding:48px 24px 64px;}
+
+  .progress-track{
+    height:6px;
+    background:var(--paper-alt);
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:36px;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--ember);
+    border-radius:4px;
+    width:0%;
+    transition:width 0.4s ease;
+  }
+  .progress-label{
+    font-size:12.5px;
+    color:rgba(31,58,77,0.55);
+    text-align:center;
+    margin-top:8px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+  }
+
+  .screen{display:none; animation:fadeIn 0.35s ease;}
+  .screen.active{display:block;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+  .eyebrow{
+    font-family:'Poppins'; font-weight:600; font-size:13px;
+    letter-spacing:1.2px; text-transform:uppercase; color:var(--ember);
+    margin-bottom:14px; text-align:center;
+  }
+  h1{
+    font-family:'Lora', serif; font-weight:700; font-size:34px;
+    line-height:1.25; color:var(--slate); text-align:center; margin-bottom:16px;
+  }
+  .intro-sub{
+    font-size:17px; color:rgba(31,58,77,0.8); text-align:center;
+    max-width:480px; margin:0 auto 32px;
+  }
+  .type-preview{
+    display:flex; justify-content:center; gap:10px; margin-bottom:36px; flex-wrap:wrap;
+  }
+  .chip{
+    font-size:12px; font-weight:500; padding:6px 12px; border-radius:20px;
+    background:var(--paper-alt); color:var(--slate);
+  }
+  .btn{
+    display:block; width:100%; text-align:center;
+    font-family:'Poppins'; font-weight:600; font-size:15px; letter-spacing:0.5px;
+    text-transform:uppercase; color:#fff; background:var(--ember);
+    border:none; border-radius:6px; padding:16px 26px; cursor:pointer;
+    transition:background 0.2s ease, transform 0.1s ease; text-decoration:none;
+  }
+  .btn:hover{background:var(--ember-dark);}
+  .btn:active{transform:scale(0.98);}
+
+  .q-eyebrow{
+    font-size:12.5px; font-weight:600; letter-spacing:1px; text-transform:uppercase;
+    color:var(--ember); margin-bottom:10px;
+  }
+  .q-text{
+    font-family:'Lora', serif; font-weight:600; font-size:23px; line-height:1.35;
+    margin-bottom:26px;
+  }
+  .options{display:flex; flex-direction:column; gap:12px;}
+  .option{
+    text-align:left; background:#fff; border:1.5px solid rgba(31,58,77,0.12);
+    border-radius:8px; padding:16px 18px; font-family:'Poppins'; font-size:15.5px;
+    color:var(--slate); cursor:pointer; transition:all 0.15s ease;
+  }
+  .option:hover{border-color:var(--ember); background:var(--paper-alt);}
+  .option:active{transform:scale(0.99);}
+  .nav-row{display:flex; justify-content:space-between; margin-top:28px;}
+  .back-link{
+    font-size:14px; color:rgba(31,58,77,0.5); background:none; border:none;
+    cursor:pointer; font-family:'Poppins';
+  }
+  .back-link:hover{color:var(--slate);}
+
+  .result-card{
+    background:#fff; border-radius:12px; padding:36px 28px; text-align:center;
+    box-shadow:0 20px 40px -20px rgba(31,58,77,0.2); margin-bottom:28px;
+  }
+  .result-eyebrow{
+    font-size:12.5px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--ember); margin-bottom:10px;
+  }
+  .result-name{
+    font-family:'Lora', serif; font-weight:700; font-size:30px; margin-bottom:16px;
+  }
+  .result-desc{font-size:16px; color:rgba(31,58,77,0.85); margin-bottom:20px;}
+  .result-fix{
+    background:var(--paper-alt); border-radius:8px; padding:18px 20px; text-align:left;
+    font-size:14.5px; margin-bottom:8px;
+  }
+  .result-fix strong{color:var(--ember);}
+  .form-row{display:flex; gap:10px; margin-top:24px;}
+  .form-row input[type=email]{
+    flex:1; padding:15px 16px; font-family:'Poppins'; font-size:16px;
+    color:var(--slate); background:var(--paper); border:1px solid rgba(31,58,77,0.2);
+    border-radius:6px; outline:none;
+  }
+  .form-row input[type=email]:focus{border-color:var(--ember); box-shadow:0 0 0 3px rgba(201,118,61,0.15);}
+  .micro{font-size:13px; color:rgba(31,58,77,0.55); margin-top:10px; text-align:center;}
+  .retake{text-align:center; margin-top:20px;}
+  .retake button{
+    background:none; border:none; font-family:'Poppins'; font-size:14px;
+    color:rgba(31,58,77,0.5); text-decoration:underline; cursor:pointer;
+  }
+
+  @media (max-width:480px){
+    h1{font-size:27px;}
+    .q-text{font-size:20px;}
+    .form-row{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">Start</div>
+
+  <div class="screen active" id="screen-intro">
+    <div class="eyebrow">60-Second Freeze Type Quiz</div>
+    <h1>Which Freeze Type Is Actually Yours?</h1>
+    <p class="intro-sub">"Just be more disciplined" doesn't work because it's the wrong fix for your mechanism. Answer 8 quick questions and find out which of the 5 Freeze Types is running the show.</p>
+    <div class="type-preview">
+      <span class="chip">Perfection Trap</span>
+      <span class="chip">Reward Drought</span>
+      <span class="chip">Mental Traffic Jam</span>
+      <span class="chip">Empty Tank</span>
+      <span class="chip">Last-Minute Brain</span>
+    </div>
+    <button class="btn" onclick="startQuiz()">Start The Quiz →</button>
+  </div>
+
+  <div id="questions-container"></div>
+
+  <div class="screen" id="screen-result">
+    <div class="result-card">
+      <div class="result-eyebrow">Your Result</div>
+      <div class="result-name" id="resultName"></div>
+      <p class="result-desc" id="resultDesc"></p>
+      <div class="result-fix" id="resultFix"></div>
+    </div>
+
+    <a href="https://www.healsynclife.site/" class="btn">Get Your Free Fix Guide →</a>
+    <p class="micro">Free chapter + your personalized fix, no card required.</p>
+
+    <div class="retake">
+      <button onclick="restartQuiz()">Retake the quiz</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const questions = [
+    {
+      q: "You've got a task you genuinely want to do. What's actually stopping you from starting?",
+      options: [
+        { text: "I keep imagining it going wrong or looking bad", type: "perfection" },
+        { text: "It just feels boring and pointless right now", type: "reward" },
+        { text: "There are too many steps and I don't know which one is first", type: "traffic" },
+        { text: "I'm mentally wiped from everything else today", type: "empty" },
+        { text: "Honestly, it doesn't feel urgent yet", type: "deadline" }
+      ]
+    },
+    {
+      q: "When you picture actually finishing the task, what's the first feeling?",
+      options: [
+        { text: "Relief that I didn't mess it up", type: "perfection" },
+        { text: "Nothing much — it doesn't feel worth celebrating", type: "reward" },
+        { text: "Overwhelm just imagining all the pieces coming together", type: "traffic" },
+        { text: "Exhaustion, like I used up everything to get there", type: "empty" },
+        { text: "I only picture it when the deadline is already close", type: "deadline" }
+      ]
+    },
+    {
+      q: "What does your to-do list usually look like?",
+      options: [
+        { text: "Short, but I rewrite the same item over and over without doing it", type: "perfection" },
+        { text: "Full of things I logically should do but don't want to", type: "reward" },
+        { text: "Long, tangled, and I avoid opening it because it's a lot", type: "traffic" },
+        { text: "Reasonable, but by evening I have zero energy left for it", type: "empty" },
+        { text: "Empty until 2 days before something's due, then it explodes", type: "deadline" }
+      ]
+    },
+    {
+      q: "What usually finally gets you moving?",
+      options: [
+        { text: "Deciding it's okay if it's imperfect — rare, but it works", type: "perfection" },
+        { text: "Someone else needing it, or a reward I actually care about", type: "reward" },
+        { text: "Writing down just the literal next physical step", type: "traffic" },
+        { text: "Getting real rest first — nothing works before that", type: "empty" },
+        { text: "The deadline being close enough to feel real", type: "deadline" }
+      ]
+    },
+    {
+      q: "When you imagine starting right now, what's the loudest thought in your head?",
+      options: [
+        { text: "\"What if I do this wrong?\"", type: "perfection" },
+        { text: "\"Why bother, nothing happens right away anyway\"", type: "reward" },
+        { text: "\"There's too much to even think about where to begin\"", type: "traffic" },
+        { text: "\"I have nothing left to give this right now\"", type: "empty" },
+        { text: "\"I've got time, I'll do it later\"", type: "deadline" }
+      ]
+    },
+    {
+      q: "Which sentence sounds most like something you've said about yourself?",
+      options: [
+        { text: "\"I'm a perfectionist, so I avoid starting things I can't do well\"", type: "perfection" },
+        { text: "\"I just can't make myself care about boring tasks\"", type: "reward" },
+        { text: "\"I get overwhelmed easily and shut down\"", type: "traffic" },
+        { text: "\"I'm running on empty most days\"", type: "empty" },
+        { text: "\"I work best under pressure\" (even though it stresses me out)", type: "deadline" }
+      ]
+    },
+    {
+      q: "How does the task usually end up getting done, if it does at all?",
+      options: [
+        { text: "I redo it several times before I let myself call it finished", type: "perfection" },
+        { text: "I bribe myself with something unrelated just to push through", type: "reward" },
+        { text: "I finally break it into tiny pieces after avoiding it for a while", type: "traffic" },
+        { text: "I wait for a day I actually have energy, then do it in one burst", type: "empty" },
+        { text: "I pull an all-nighter or last-minute sprint right before it's due", type: "deadline" }
+      ]
+    },
+    {
+      q: "What does the voice in your head say when you finally sit down to start?",
+      options: [
+        { text: "\"This isn't good enough yet, keep fixing it\"", type: "perfection" },
+        { text: "\"This is so tedious, why does it matter\"", type: "reward" },
+        { text: "\"Where do I even begin, there's too much\"", type: "traffic" },
+        { text: "\"I genuinely don't have it in me right now\"", type: "empty" },
+        { text: "\"It's fine, there's still time\"", type: "deadline" }
+      ]
+    }
+  ];
+
+  const results = {
+    perfection: {
+      name: "The Perfection Trap",
+      desc: "Starting feels risky because doing it imperfectly feels like failure. Your brain isn't avoiding the task — it's avoiding the judgment of doing it wrong.",
+      fix: "<strong>Quick fix:</strong> Set a deliberately low bar for the first attempt — a \"bad first draft\" you're allowed to fully mess up. The goal of attempt one is just that it exists."
+    },
+    reward: {
+      name: "The Reward Drought",
+      desc: "Nothing about the task pays off fast enough to pull you toward it. Your brain runs on near-term reward, and this task isn't offering any.",
+      fix: "<strong>Quick fix:</strong> Attach an artificial reward that arrives immediately after a small chunk of work — not after the whole task. Make the payoff show up sooner than the task naturally offers it."
+    },
+    traffic: {
+      name: "The Mental Traffic Jam",
+      desc: "Every step arrives in your head at once, so none of them move. It's not that the task is too hard — it's that your working memory floods instantly.",
+      fix: "<strong>Quick fix:</strong> Write down only the very next physical motion — not a category, an actual movement. Do only that one thing, then look again."
+    },
+    empty: {
+      name: "The Empty Tank",
+      desc: "There's nothing left in you to decide with by the time the task shows up. This isn't about motivation — your decision-making resource is genuinely depleted.",
+      fix: "<strong>Quick fix:</strong> Stop trying to solve this with willpower. Protect one small window earlier in the day, before the tank empties, and do the task then instead."
+    },
+    deadline: {
+      name: "Last-Minute Brain",
+      desc: "The deadline doesn't feel real yet, so nothing in you responds to it — until it's suddenly very real, and everything responds at once.",
+      fix: "<strong>Quick fix:</strong> Create an artificial earlier deadline with a real consequence attached, so your brain treats it as urgent before the actual one arrives."
+    }
+  };
+
+  let current = 0;
+  const scores = { perfection: 0, reward: 0, traffic: 0, empty: 0, deadline: 0 };
+  const container = document.getElementById('questions-container');
+
+  questions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'screen';
+    div.id = 'screen-q' + i;
+    let optionsHTML = q.options.map((opt) =>
+      `<button class="option" onclick="answer(${i}, '${opt.type}')">${opt.text}</button>`
+    ).join('');
+    div.innerHTML = `
+      <div class="q-eyebrow">Question ${i + 1} of ${questions.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">${optionsHTML}</div>
+      <div class="nav-row">
+        ${i > 0 ? `<button class="back-link" onclick="goBack(${i})">← Back</button>` : '<span></span>'}
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  function updateProgress(step) {
+    const total = questions.length + 1;
+    const pct = Math.round((step / total) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent =
+      step === 0 ? 'Start' : step > questions.length ? 'Complete' : `Question ${step} of ${questions.length}`;
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function startQuiz() {
+    current = 0;
+    showScreen('screen-q0');
+    updateProgress(1);
+  }
+
+  function answer(index, type) {
+    scores[type]++;
+    if (index < questions.length - 1) {
+      current = index + 1;
+      showScreen('screen-q' + current);
+      updateProgress(current + 1);
+    } else {
+      showResult();
+    }
+  }
+
+  function goBack(index) {
+    current = index - 1;
+    showScreen('screen-q' + current);
+    updateProgress(current + 1);
+  }
+
+  function showResult() {
+    let topType = Object.keys(scores).reduce((a, b) => scores[a] >= scores[b] ? a : b);
+    const r = results[topType];
+    document.getElementById('resultName').textContent = r.name;
+    document.getElementById('resultDesc').textContent = r.desc;
+    document.getElementById('resultFix').innerHTML = r.fix;
+    showScreen('screen-result');
+    updateProgress(questions.length + 1);
+  }
+
+  function restartQuiz() {
+    Object.keys(scores).forEach(k => scores[k] = 0);
+    startQuiz();
+  }
+
+</script>
+</body>
+</html>
